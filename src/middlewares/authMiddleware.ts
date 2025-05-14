@@ -1,0 +1,25 @@
+import { Request, Response, NextFunction } from "express";
+import jwt from 'jsonwebtoken';
+
+interface AuthRequest extends Request {
+  userId?: string;
+}
+
+  const authMiddleware = (req: AuthRequest,res: Response,next: NextFunction): void => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+
+  if (!token) {
+    res.status(401).json({ message: 'No token, authorization denied', error: 401 });
+    return; // ✅ Only return if token is missing
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string };
+    req.userId = decoded.userId;
+    next(); // ✅ Valid token
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid or expired token', error: 401 });
+    return; // ✅ Only return if token is invalid
+  }
+};
+export default authMiddleware;
