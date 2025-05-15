@@ -2,10 +2,11 @@
 import { Request, Response } from "express";
 import post from '../models/Post';
 
-export const createPost = async (req: Request, res: Response) => {
+
+
+export const createPost = async (req:any, res: any) => {
     try{
-        const content = req.body;
-        const user = req.userId;
+        const {user,content} = req.body;
 
         const newPost = new post({user,content});
         const savedPost = await newPost.save();
@@ -13,18 +14,20 @@ export const createPost = async (req: Request, res: Response) => {
         res.status(201).json(savedPost);
 
     } catch(error) {
-        res.status(500).json({message:'Internal Server error', error:505})
+        res.status(500).json({message:'Internal Server error', error:500})
     }
 };
 
 export const getPosts = async (req:Request, res:Response) => {
     try{ 
 
-     const posts = await post.find().populate('user','username email');
+     const posts = await post.find();
      res.status(200).json({posts});
     
     }catch (error) {
-     res.status(500).json({message:'Internal Server error', error:505})
+        
+        
+     res.status(500).json({message:'Internal Server error', error:500})
 
     }
 };

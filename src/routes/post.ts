@@ -1,13 +1,13 @@
 import express from "express";
 import {createPost, getPosts} from '../controllers/postcontroller';
-import authMiddleware  from "../middlewares/authMiddleware";
+// import authMiddleware  from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
 //create post
-router.post('/', authMiddleware, createPost);
+router.post('/createPost', createPost);
 
 //Get ALL Posts
-router.get('/',getPosts);
+router.get('/getPosts',getPosts);
 
 export default router;
