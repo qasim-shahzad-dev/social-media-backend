@@ -21,7 +21,7 @@ export const register = async (req: IUserRequest, res: any) => {
             return res.status(400).json({ message: "User already exist", error: 400 });
         const newUser = new User(({ username, email, password }));
         await newUser.save();
-        res.status(201).json({ message: "User registered successfuly " });
+        res.status(201).json({ message: "User registered successfuly ", error:201, });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: 500 });
     }
