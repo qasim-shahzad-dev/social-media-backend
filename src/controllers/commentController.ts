@@ -6,7 +6,7 @@ import Comment from "../models/Comment";
 // comment
 
 interface CommentRequest {
-
+    postId: String,
     username: String,
     content: String,
 }
@@ -15,9 +15,9 @@ export const createComment  = async ( req: Request, res: any) => {
 
     
     try {
-        const {   username, content} = req.body;
+        const {  postId,  username, content} = req.body;
 
-        const comment = new Comment({ content,username});
+        const comment = new Comment({ postId, content,username});
         const savedComment = await comment.save();
 
         res.status(201).json(savedComment);
@@ -30,3 +30,18 @@ export const createComment  = async ( req: Request, res: any) => {
     }
 
 }
+
+//Get comments for specific post
+
+export const getCommentForPost = async (req: Request, res: Response) => {
+
+    try{
+        const { postId } = req.params;
+        const comments = await Comment.find({ postId });
+        res.status(200).json({ comments });
+
+    } catch (error) {
+     res.status (500).json({message: "Internal server error "});
+
+    }
+};
