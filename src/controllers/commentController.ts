@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Comment from "../models/Comment";
-import Post from "../models/Post";
-import { SlowBuffer } from "buffer";
+// import Post from "../models/Post";
+
 
 // comment
 
