@@ -5,14 +5,14 @@ interface IPost extends Document {
     user:string,
     content: string;
     createdAt: Date;
-    likes: [string],
+    likes: number,
 }
 
-const postScehma: Schema<IPost> = new Schema ({
+const postScehma: Schema<IPost> = new mongoose.Schema ({
     user: {type: String, ref: 'User', required:true},
     content: {type: String, required:true},
     createdAt: {type: Date, default:Date.now},
-    likes: { type: [String], default:[] }
+    likes: { type: Number, default:0 }
 
 });
 

@@ -5,6 +5,7 @@ import connectDB from './config/db';
 import authRoutes from './routes/auth';
 import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
+import likeRoutes from './routes/like';
 
 dotenv.config();
 connectDB();
@@ -24,7 +25,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes)
 app.use('/api/comments', commentRoutes);
-
+app.use('/api/likes',likeRoutes);
 
 
 
