@@ -15,16 +15,15 @@ export const toggleLike = async (req: IlikeRequest, res: any) => {
         const post = await Post.findById(postId);
         if (!post) return res.status(404).json({ message: 'Post not found' });
 
-        const alreadyLike = 
+        const userIndex = post.likes.indexOf(userId);
 
-        post.likes += 1;
+        if(userIndex === -1) {
+            post.likes.push(userId);
+        } else {
+            post.likes.splice(userIndex, 1);
+        }
         await post.save();
-
-        res.status(200).json({
-            message: "Post liked successfully",
-            success: true,
-            likes: post.likes,
-        });
+        res.status(200).json({sucess:true, message:userIndex === -1 ? 'PostLiked' : 'Post unliked', LikesCount: post.likes.length})
 
     } catch (error) {
 
