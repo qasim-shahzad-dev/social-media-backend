@@ -6,6 +6,9 @@ import authRoutes from './routes/auth';
 import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
 import likeRoutes from './routes/like';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 dotenv.config();
 connectDB();
@@ -15,6 +18,9 @@ connectDB();
 
 const app = express();
 app.use(express.json());
+app.use(helmet());
+app.use(cors());
+app.use(morgan('dev'));
 
 
 
