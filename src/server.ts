@@ -9,6 +9,7 @@ import likeRoutes from './routes/like';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import authMiddleware from './middlewares/authMiddleware';
 
 dotenv.config();
 connectDB();
@@ -29,9 +30,10 @@ app.use(morgan('dev'));
 
 //routes
 app.use('/api/auth', authRoutes);
-app.use('/api/post', postRoutes)
-app.use('/api/comments', commentRoutes);
-app.use('/api/likes',likeRoutes);
+app.use(authMiddleware)
+app.use('/api/post',authMiddleware, postRoutes)
+app.use('/api/comments',authMiddleware, commentRoutes);
+app.use('/api/likes',authMiddleware, likeRoutes);
 
 
 
