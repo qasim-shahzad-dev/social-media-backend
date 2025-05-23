@@ -7,10 +7,14 @@ import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
 import likeRoutes from './routes/like';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import authMiddleware from './middlewares/authMiddleware';
+=======
+// import authMiddleware from './middlewares/authMiddleware';
+>>>>>>> Stashed changes
 =======
 // import authMiddleware from './middlewares/authMiddleware';
 >>>>>>> Stashed changes
