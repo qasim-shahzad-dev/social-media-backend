@@ -6,20 +6,10 @@ import authRoutes from './routes/auth';
 import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
 import likeRoutes from './routes/like';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import authMiddleware from './middlewares/authMiddleware';
-=======
+import currentRoutes from './routes/Current';
 // import authMiddleware from './middlewares/authMiddleware';
->>>>>>> Stashed changes
-=======
-// import authMiddleware from './middlewares/authMiddleware';
->>>>>>> Stashed changes
 
-dotenv.config();
+// dotenv.config();
 connectDB();
 
 
@@ -27,9 +17,6 @@ connectDB();
 
 const app = express();
 app.use(express.json());
-app.use(helmet());
-app.use(cors());
-app.use(morgan('dev'));
 
 
 
@@ -39,9 +26,10 @@ app.use(morgan('dev'));
 //routes
 app.use('/api/auth', authRoutes);
 // app.use(authMiddleware)
-app.use('/api/post', postRoutes);
+app.use('/api/post', postRoutes)
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
+app.use('/api/users',currentRoutes)
 
 
 

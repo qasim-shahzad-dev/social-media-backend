@@ -1,3 +1,10 @@
 import  express  from "express";
-import authMiddleware from "../middlewares/authMiddleware";
-import User from "../models/User";
+import  {getCurrentUser}  from "../controllers/CurrentController";
+
+
+
+const router = express.Router();
+
+router.get('/current', getCurrentUser);
+
+export default router;
