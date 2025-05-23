@@ -7,9 +7,9 @@ import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
 import likeRoutes from './routes/like';
 import currentRoutes from './routes/Current';
-// import authMiddleware from './middlewares/authMiddleware';
+import authMiddleware from './middlewares/authMiddleware';
 
-// dotenv.config();
+dotenv.config();
 connectDB();
 
 
@@ -25,7 +25,7 @@ app.use(express.json());
 
 //routes
 app.use('/api/auth', authRoutes);
-// app.use(authMiddleware)
+app.use(authMiddleware)
 app.use('/api/post', postRoutes)
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);

@@ -5,7 +5,6 @@ interface AuthRequest extends Request {
     userId?: string,
 }
 export const getCurrentUser  = async ( req:AuthRequest, res:any) => {
-
     try {
     const user = await User.findById(req.userId).select('-password');
     if(!user)
