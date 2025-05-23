@@ -6,10 +6,14 @@ import authRoutes from './routes/auth';
 import postRoutes from './routes/post';
 import commentRoutes from './routes/Comment';
 import likeRoutes from './routes/like';
+<<<<<<< Updated upstream
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import authMiddleware from './middlewares/authMiddleware';
+=======
+// import authMiddleware from './middlewares/authMiddleware';
+>>>>>>> Stashed changes
 
 dotenv.config();
 connectDB();
@@ -30,10 +34,10 @@ app.use(morgan('dev'));
 
 //routes
 app.use('/api/auth', authRoutes);
-app.use(authMiddleware)
-app.use('/api/post',authMiddleware, postRoutes)
-app.use('/api/comments',authMiddleware, commentRoutes);
-app.use('/api/likes',authMiddleware, likeRoutes);
+// app.use(authMiddleware)
+app.use('/api/post', postRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/likes', likeRoutes);
 
 
 
