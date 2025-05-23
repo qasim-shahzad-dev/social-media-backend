@@ -10,7 +10,7 @@ router.post('/signup', signup)
    
 
 
-router.post('/login',login);
+router.post('/signin',login);
      
 
 
