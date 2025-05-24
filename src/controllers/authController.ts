@@ -80,15 +80,17 @@ export const login = async (req: IUserRequest, res: any) => {
       }
     );
     res
-      .status(200)
-      .json({
-        token,
-        userId: user._id,
-        username: user.username,
-        message: "Successfully loged in",
-        status: 200,
-        success: true,
-      });
+    res.status(200).json({
+  result: {
+    token: token, 
+  },
+  
+  message: "User logged in successfully",
+  status: 200,
+  success: true,
+});
+
+
   } catch (error) {
     res
       .status(500)

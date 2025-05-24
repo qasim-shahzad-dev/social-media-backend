@@ -6,6 +6,6 @@ const router = express.Router();
 
 //toggleLike
 
-router.post('/post/:postId/like', toggleLike);
+router.post("/post/:postId/like", toggleLike);
 
 export default router;
