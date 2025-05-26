@@ -11,7 +11,10 @@ export const toggleLike = async (req: IlikeRequest, res: any) => {
     const userId = req.body.userId;
 
     const post = await Post.findById(postId);
-    if (!post) return res.status(404).json({ message: "Post not found",status:404, success:false });
+    if (!post)
+      return res
+        .status(404)
+        .json({ message: "Post not found", status: 404, success: false });
 
     const userIndex = post.likes.indexOf(userId);
 
@@ -21,16 +24,14 @@ export const toggleLike = async (req: IlikeRequest, res: any) => {
       post.likes.splice(userIndex, 1);
     }
     await post.save();
-    res
-      .status(200)
-      .json({
-        sucess: true,
-        message: userIndex === -1 ? "PostLiked" : "Post unliked",
-        LikesCount: post.likes.length,
-      });
+    res.status(200).json({
+      sucess: true,
+      message: userIndex === -1 ? "PostLiked" : "Post unliked",
+      LikesCount: post.likes.length,
+    });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "internal server error", status:500, success:false});
+      .json({ message: "internal server error", status: 500, success: false });
   }
 };
