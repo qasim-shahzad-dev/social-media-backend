@@ -6,12 +6,16 @@ export interface IUser extends Document {
   email: string;
   password: string;
   comparePassword(candidatePassword: string): boolean;
+  profileImage?:Base64URLString,
+  tagline?:string,
 }
 const UserSchema: Schema = new Schema(
   {
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    profileImage: { type: String},
+    tagline:{type: String}
   },
   { timestamps: true }
 );

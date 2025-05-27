@@ -8,6 +8,7 @@ import commentRoutes from "./routes/Comment";
 import likeRoutes from "./routes/like";
 import currentRoutes from "./routes/Current";
 import authMiddleware from "./middlewares/authMiddleware";
+import  updateProfileRoutes  from "./routes/updateProfile";
 
 dotenv.config();
 connectDB();
@@ -23,6 +24,7 @@ app.use("/api/post", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/users", currentRoutes);
+app.use("/api",updateProfileRoutes)
 
 //Port
 const PORT = process.env.PORT || 5000;
