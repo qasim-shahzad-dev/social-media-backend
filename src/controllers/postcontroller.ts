@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import post from "../models/Post";
-import { title } from "process";
+import redisClient from "../config/redisClient";
 
 export const createPost = async (req: Request, res: Response) => {
   try {
@@ -34,11 +34,37 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export const getPosts = async (req: Request, res: Response) => {
+
+interface CustomRequest extends Request {
+  user?:{
+    id:string,
+    email:string,
+  }
+}
+
+export const getPosts = async (req:CustomRequest , res: any) => {
   try {
-    const posts = await post.find();
-    res.status(200).json({ posts });
+    const cacheKey = "all-posts";
+
+    //try to get cache posts
+
+    const cachePosts = await redisClient.get(cacheKey);
+    if(cachePosts) {
+      return res.status(200).json({posts:JSON.parse(cachePosts), source:"cache", status:200, success:true});
+    };
+
+    //if not in cache fetch it from db
+
+
+    const posts = await post.find().sort({createdAt: -1});
+    //save to redis cache for future requests (set 60s expiry)
+   await redisClient.set(cacheKey, JSON.stringify(posts), {
+  EX: 60, // expires in 60 seconds
+});
+    res.status(200).json({ posts,source:"database",status:200, success:true });
   } catch (error) {
+    console.error("Get posts error:", error);
+    
     res
       .status(500)
       .json({ message: "Internal Server error", status: 500, success: false });
