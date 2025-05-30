@@ -81,7 +81,7 @@ export const login = async (req: IUserRequest, res: any) => {
     );
     res
     res.status(200).json({
-  result: {
+  results: {
     token: token, 
   },
   
