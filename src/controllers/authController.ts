@@ -57,11 +57,12 @@ export const login = async (req: IUserRequest, res: any) => {
 
   try {
     const user = await User.findOne({ email });
+
     if (!user)
       return res
         .status(400)
         .json({
-          message: "Provide email please !",
+          message: "Invalid Email!, Please Provide correct email ",
           status: 400,
           success: false,
         });

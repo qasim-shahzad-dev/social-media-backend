@@ -20,7 +20,7 @@ export const updateProfile = async (req: AuthRequest, res: any) => {
     const userDoc = user as IUser;
 
     if (username) {
-      userDoc.username = username;
+      userDoc.userName = username;
     }
 
     if (profileImage) {
@@ -38,7 +38,7 @@ export const updateProfile = async (req: AuthRequest, res: any) => {
     }
 
     if (tagline) {
-      userDoc.tagline = tagline;
+      userDoc.tagLine = tagline;
     }
 
     await userDoc.save();

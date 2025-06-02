@@ -2,12 +2,18 @@ import mongoose, { Schema, Document, mongo } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
-  username: string;
+  userName: string;
   email: string;
   password: string;
   comparePassword(candidatePassword: string): boolean;
   profileImage?:Base64URLString,
-  tagline?:string,
+  tagLine?:string,
+  following: mongoose.Types.ObjectId[],
+  followers: mongoose.Types.ObjectId[],
+
+  createdAt: Date,
+  updatedAt: Date,
+
 }
 const UserSchema: Schema = new Schema(
   {
@@ -15,7 +21,9 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     profileImage: { type: String},
-    tagline:{type: String}
+    tagLine:{type: String},
+    followers:[{type: mongoose.Schema.Types.ObjectId, ref:"User"}],
+    following:[{type:mongoose.Schema.ObjectId, ref:"User"}]
   },
   { timestamps: true }
 );

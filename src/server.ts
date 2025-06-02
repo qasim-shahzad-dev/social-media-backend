@@ -20,10 +20,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes); // excuding middleware in signup,signin
 
 app.use(authMiddleware);
+app.use("/api/auth", currentRoutes);
 app.use("/api/post", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
-app.use("/api/users", currentRoutes);
 app.use("/api/user",updateProfileRoutes)
 
 //Port
