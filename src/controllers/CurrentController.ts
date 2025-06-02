@@ -11,7 +11,15 @@ export const getCurrentUser = async (req: AuthRequest, res: any) => {
       return res
         .status(404)
         .json({ message: "User not found", status: 404, sucess: false });
-    res.json(user);
+    res.json({
+  results: {
+    user: user, 
+  },
+  
+  message: "Successfull",
+  status: 200,
+  success: true,
+});
   } catch (error) {
     console.error("Error in getCurrentUser", error);
     res

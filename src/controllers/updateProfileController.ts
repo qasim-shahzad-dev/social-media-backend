@@ -8,7 +8,7 @@ export const updateProfile = async (req: Request, res: any) => {
       return res
         .status(400)
         .json({
-          message: "username does not exists",
+          message: "please provide Username",
           status: 400,
           success: false,
         });
@@ -44,6 +44,8 @@ export const updateProfile = async (req: Request, res: any) => {
         profileImage: userDoc.profileImage,
       },
     });
+    if (!tagline)
+    return  res.status(400).json({message: "Please provide tagline", status: 400, success: false})
   } catch (error) {
     res
       .status(500)
