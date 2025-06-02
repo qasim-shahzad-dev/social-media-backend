@@ -20,7 +20,7 @@ export const getCurrentUser = async (req: AuthRequest, res: any) => {
       results: {
         user:{
           _id: user._id,
-          userName: user.userName,
+          userName: user.username,
           tagLine: user.tagLine || "",
           following: user.following.length,
           followers: user.followers.length,

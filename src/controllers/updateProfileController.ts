@@ -20,7 +20,7 @@ export const updateProfile = async (req: AuthRequest, res: any) => {
     const userDoc = user as IUser;
 
     if (username) {
-      userDoc.userName = username;
+      userDoc.username = username;
     }
 
     if (profileImage) {

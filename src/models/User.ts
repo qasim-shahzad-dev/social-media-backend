@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, mongo } from "mongoose";
 import bcrypt from "bcrypt";
 
 export interface IUser extends Document {
-  userName: string;
+  username: string;
   email: string;
   password: string;
   comparePassword(candidatePassword: string): boolean;
