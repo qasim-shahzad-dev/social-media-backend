@@ -24,7 +24,7 @@ app.use("/api/post", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/users", currentRoutes);
-app.use("/api",updateProfileRoutes)
+app.use("/api/user",updateProfileRoutes)
 
 //Port
 const PORT = process.env.PORT || 5000;

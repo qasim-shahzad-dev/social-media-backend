@@ -3,7 +3,7 @@ import User, { IUser } from "../models/User";
 
 export const updateProfile = async (req: Request, res: any) => {
   try {
-    const { username, ProfileImage, tagline } = req.body;
+    const { username, profileImage, tagline } = req.body;
     if (!username) {
       return res
         .status(400)
@@ -22,27 +22,24 @@ export const updateProfile = async (req: Request, res: any) => {
     }
     const userDoc = user as IUser;
 
-    if (ProfileImage) {
+    if (profileImage) {
       const isBase64Image = /^data:image\/(png|jpeg|jpg|gif);base64,/.test(
-        ProfileImage
+        profileImage
       );
       if (!isBase64Image) {
         return res
           .status(400)
           .json({ error: "Invalid image format (must be base64)" });
       }
-      userDoc.profileImage = ProfileImage;
+      userDoc.profileImage = profileImage;
     }
 
     if (tagline) userDoc.tagline = tagline;
     await userDoc.save();
     res.status(200).json({
       message: "Profile updated successfully",
-      user: {
-        username: userDoc.username,
-        tagline: userDoc.tagline,
-        profileImage: userDoc.profileImage,
-      },
+      success:true,
+      status:200,
     });
     if (!tagline)
     return  res.status(400).json({message: "Please provide tagline", status: 400, success: false})
