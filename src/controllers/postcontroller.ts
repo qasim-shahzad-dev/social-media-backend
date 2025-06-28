@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import post from "../models/Post";
 import redisClient from "../config/redisClient";
+import { count } from "console";
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: CustomRequest, res: Response) => {
   try {
-    const { description } = req.body;
-    const { title } = req.body;
+    const { description,title } = req.body;
+    
 
     //read image file
     const image = req.file
@@ -15,7 +16,7 @@ export const createPost = async (req: Request, res: Response) => {
         }
       : undefined;
 
-    const newPost = new post({ title: title, description, image });
+    const newPost = new post({ title , description, image, userId: req.user?.id, });
 
     const savedPost = await newPost.save();
     res.status(201).json({
@@ -70,3 +71,70 @@ export const getPosts = async (req:CustomRequest , res: any) => {
       .json({ message: "Internal Server error", status: 500, success: false });
   }
 };
+
+export const getPostById = async (req: Request, res: Response) => {
+
+  try {
+    const postId = req.params.id;
+    const foundPost = await post.findById(postId);
+
+    if (!foundPost) {
+      return res.status(404).json({ message:"Post not found", status: 404, success: false});
+    }
+   res.status(200).json({post: foundPost, message:"Post fetched scuccessfully ", status: 200, success:true});
+
+  } catch (error) {
+    console.error("Get post error", error);
+    res.status(500).json({ message:"Internal Server Error", status:500, success:false})
+    
+    
+  }
+}
+
+export const updatePost = async (req:CustomRequest, res:Response) => {
+
+  try {
+    const postId = req.params.id;
+    const {title, description} = req.body;
+    const userId = req.user?.id;
+
+    const foundPost = await post.findById(postId);
+    if (!foundPost) {
+      return res.status(404).json({ message: "Post not found", status: 404, success: false });
+    }
+    // image can also be updated
+    const image = req.file ? {
+      data: req.file.buffer.toString("base64"),
+      contentType: req.file.mimetype,
+    }
+    :foundPost.image;
+
+    foundPost.title = title || foundPost.title;
+    foundPost.description = description || foundPost.description;
+    foundPost.image = image;
+
+  } catch (error) {
+    console.error("Update post error:", error);
+    res.status(500).json({ message: "Internal Server error", status: 500, success: false });
+  }
+}
+
+export const deletePost = async (req:CustomRequest, res:Response) => {
+
+  try {
+    const postId = req.params.id;
+    const userId = req.user?.id;
+
+    const foundPost = await post.findById(postId);
+    if(!foundPost) {
+      return res.status(404).json({ message: "Post not found", status: 404, success: false });
+    }
+
+    await foundPost.deleteOne();
+
+
+  } catch (error) {
+    console.error("Update post error:", error);
+    res.status(500).json({ message: "Internal Server error", status: 500, success: false });
+  }
+}

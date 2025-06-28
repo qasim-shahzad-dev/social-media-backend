@@ -4,11 +4,11 @@ import Post from "../models/Post";
 
 // comment
 
-interface CommentRequest {
-  postId: String;
-  username: String;
-  content: String;
-}
+// interface CommentRequest {
+//   postId: String;
+//   username: String;
+//   content: String;
+// }
 
 export const createComment = async (req: Request, res: any) => {
   try {
