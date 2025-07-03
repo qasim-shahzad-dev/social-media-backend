@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import post from "../models/Post";
 import redisClient from "../config/redisClient";
-import { count } from "console";
+// import { count } from "console";
+// import { updateProfile } from "./updateProfileController";
 
 export const createPost = async (req: CustomRequest, res: Response) => {
   try {
-    const { description,title } = req.body;
-    
+    const { description, title } = req.body;
 
     //read image file
     const image = req.file
@@ -16,7 +16,12 @@ export const createPost = async (req: CustomRequest, res: Response) => {
         }
       : undefined;
 
-    const newPost = new post({ title , description, image, userId: req.user?.id, });
+    const newPost = new post({
+      title,
+      description,
+      image,
+      userId: req.user?.id,
+    });
 
     const savedPost = await newPost.save();
     res.status(201).json({
@@ -35,106 +40,125 @@ export const createPost = async (req: CustomRequest, res: Response) => {
   }
 };
 
-
 interface CustomRequest extends Request {
-  user?:{
-    id:string,
-    email:string,
-  }
+  user?: {
+    id: string;
+    email: string;
+  };
 }
 
-export const getPosts = async (req:CustomRequest , res: any) => {
+export const getPosts = async (req: CustomRequest, res: any) => {
   try {
     const cacheKey = "all-posts";
 
     //try to get cache posts
 
     const cachePosts = await redisClient.get(cacheKey);
-    if(cachePosts) {
-      return res.status(200).json({posts:JSON.parse(cachePosts), source:"cache", status:200, success:true});
-    };
+    if (cachePosts) {
+      return res
+        .status(200)
+        .json({
+          posts: JSON.parse(cachePosts),
+          source: "cache",
+          status: 200,
+          success: true,
+        });
+    }
 
     //if not in cache fetch it from db
 
-
-    const posts = await post.find().sort({createdAt: -1});
+    const posts = await post.find().sort({ createdAt: -1 });
     //save to redis cache for future requests (set 60s expiry)
-   await redisClient.set(cacheKey, JSON.stringify(posts), {
-  EX: 60, // expires in 60 seconds
-});
-    res.status(200).json({ posts,source:"database",status:200, success:true });
+    await redisClient.set(cacheKey, JSON.stringify(posts), {
+      EX: 60, // expires in 60 seconds
+    });
+    res
+      .status(200)
+      .json({ posts, source: "database", status: 200, success: true });
   } catch (error) {
     console.error("Get posts error:", error);
-    
+
     res
       .status(500)
       .json({ message: "Internal Server error", status: 500, success: false });
   }
 };
 
-export const getPostById = async (req: Request, res: Response) => {
-
+export const getPostById = async (req: CustomRequest, res: any) => {
   try {
     const postId = req.params.id;
     const foundPost = await post.findById(postId);
 
     if (!foundPost) {
-      return res.status(404).json({ message:"Post not found", status: 404, success: false});
+      return res
+        .status(404)
+        .json({ message: "Post not found", status: 404, success: false });
     }
-   res.status(200).json({post: foundPost, message:"Post fetched scuccessfully ", status: 200, success:true});
-
+    res
+      .status(200)
+      .json({
+        post: foundPost,
+        message: "Post fetched scuccessfully ",
+        status: 200,
+        success: true,
+      });
   } catch (error) {
     console.error("Get post error", error);
-    res.status(500).json({ message:"Internal Server Error", status:500, success:false})
-    
-    
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", status: 500, success: false });
   }
-}
+};
 
-export const updatePost = async (req:CustomRequest, res:Response) => {
-
+export const updatePost = async (req: CustomRequest, res: any) => {
   try {
     const postId = req.params.id;
-    const {title, description} = req.body;
+    const { title, description } = req.body;
     const userId = req.user?.id;
 
     const foundPost = await post.findById(postId);
     if (!foundPost) {
-      return res.status(404).json({ message: "Post not found", status: 404, success: false });
+      return res
+        .status(404)
+        .json({ message: "Post not found", status: 404, success: false });
     }
     // image can also be updated
-    const image = req.file ? {
-      data: req.file.buffer.toString("base64"),
-      contentType: req.file.mimetype,
-    }
-    :foundPost.image;
+    const image = req.file
+      ? {
+          data: req.file.buffer.toString("base64"),
+          contentType: req.file.mimetype,
+        }
+      : foundPost.image;
 
     foundPost.title = title || foundPost.title;
     foundPost.description = description || foundPost.description;
     foundPost.image = image;
-
+    const updatePost = await foundPost.save();
   } catch (error) {
     console.error("Update post error:", error);
-    res.status(500).json({ message: "Internal Server error", status: 500, success: false });
+    res
+      .status(500)
+      .json({ message: "Internal Server error", status: 500, success: false });
   }
-}
+};
 
-export const deletePost = async (req:CustomRequest, res:Response) => {
-
+export const deletePost = async (req: CustomRequest, res: any) => {
   try {
     const postId = req.params.id;
     const userId = req.user?.id;
 
     const foundPost = await post.findById(postId);
-    if(!foundPost) {
-      return res.status(404).json({ message: "Post not found", status: 404, success: false });
+    if (!foundPost) {
+      return res
+        .status(404)
+        .json({ message: "Post not found", status: 404, success: false });
     }
 
     await foundPost.deleteOne();
-
-
   } catch (error) {
     console.error("Update post error:", error);
-    res.status(500).json({ message: "Internal Server error", status: 500, success: false });
+    res
+      .status(500)
+      .json({ message: "Internal Server error", status: 500, success: false });
   }
-}
+};

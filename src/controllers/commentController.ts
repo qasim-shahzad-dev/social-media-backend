@@ -4,13 +4,13 @@ import Post from "../models/Post";
 
 // comment
 
-// interface CommentRequest {
-//   postId: String;
-//   username: String;
-//   content: String;
-// }
+interface CommentRequest extends Request {
+  postId: String;
+  username: String;
+  content: String;
+}
 
-export const createComment = async (req: Request, res: any) => {
+export const createComment = async (req: CommentRequest, res: any) => {
   try {
     const { postId, username, content } = req.body;
 
@@ -19,7 +19,9 @@ export const createComment = async (req: Request, res: any) => {
 
     res.status(201).json(savedComment);
   } catch (error) {
-    res.status(500).json({ message: "Error creating Comment", status:500, success:false });
+    res
+      .status(500)
+      .json({ message: "Error creating Comment", status: 500, success: false });
   }
 };
 
@@ -31,6 +33,31 @@ export const getCommentForPost = async (req: Request, res: Response) => {
     const comments = await Comment.find({ postId });
     res.status(200).json({ comments });
   } catch (error) {
-    res.status(500).json({ message: "Internal server error " ,status:500, success:false});
+    res
+      .status(500)
+      .json({ message: "Internal server error ", status: 500, success: false });
+  }
+};
+
+export const deleteComment = async (req: Request<{ id:string}>, res: Response) => {
+  try {
+    const deletedComment = await Comment.findByIdAndDelete(req.params.id);
+    if (!deletedComment) {
+      return res
+        .status(404)
+        .json({ message: "Comment not found", status: 404, success: false });
+    }
+    res
+      .status(200)
+      .json({
+        message: "Comment deleted sucessfully ",
+        status: 200,
+        success: true,
+      });
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", status: 500, success: false });
   }
 };
