@@ -67,7 +67,7 @@ export const login = async (req: IUserRequest, res: any) => {
           success: false,
         });
 
-    const isMatch = await user.comparePassword(password);
+    const isMatch =  user.comparePassword(password);
     if (!isMatch)
       return res
         .status(400)

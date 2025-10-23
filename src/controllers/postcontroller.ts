@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import post from "../models/Post";
-import redisClient from "../config/redisClient";
+// import redisClient from "../config/redisClient";
 // import { count } from "console";
 // import { updateProfile } from "./updateProfileController";
 
@@ -19,7 +19,7 @@ export const createPost = async (req: CustomRequest, res: Response) => {
     const newPost = new post({
       title,
       description,
-      image,
+      image : image ?? '',
       userId: req.user?.id,
     });
 
@@ -49,29 +49,29 @@ interface CustomRequest extends Request {
 
 export const getPosts = async (req: CustomRequest, res: any) => {
   try {
-    const cacheKey = "all-posts";
+    // const cacheKey = "all-posts";
 
     //try to get cache posts
 
-    const cachePosts = await redisClient.get(cacheKey);
-    if (cachePosts) {
-      return res
-        .status(200)
-        .json({
-          posts: JSON.parse(cachePosts),
-          source: "cache",
-          status: 200,
-          success: true,
-        });
-    }
+    // const cachePosts = await redisClient.get(cacheKey);
+    // if (cachePosts) {
+    //   return res
+    //     .status(200)
+    //     .json({
+    //       posts: JSON.parse(cachePosts),
+    //       source: "cache",
+    //       status: 200,
+    //       success: true,
+    //     });
+    // }
 
     //if not in cache fetch it from db
 
     const posts = await post.find().sort({ createdAt: -1 });
     //save to redis cache for future requests (set 60s expiry)
-    await redisClient.set(cacheKey, JSON.stringify(posts), {
-      EX: 60, // expires in 60 seconds
-    });
+    // await redisClient.set(cacheKey, JSON.stringify(posts), {
+    //   EX: 60, 
+    // });
     res
       .status(200)
       .json({ posts, source: "database", status: 200, success: true });
