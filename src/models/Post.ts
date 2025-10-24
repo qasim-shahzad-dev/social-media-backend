@@ -1,10 +1,11 @@
-import mongoose, { Schema, Document, Date } from "mongoose";
+import mongoose, { Schema, Document, Date, ObjectId } from "mongoose";
 
 interface IPost extends Document {
+  creator:Schema.Types.ObjectId
   title: string;
   description: string;
   createdAt: Date;
-  comment:string;
+  comment: string;
   likes: string[];
   image: {
     data: string;
@@ -13,7 +14,8 @@ interface IPost extends Document {
 }
 
 const postScehma: Schema<IPost> = new mongoose.Schema({
-  title: { type: String, ref: "User", required: true },
+  creator: { type: Schema.Types.ObjectId, reuqired: true, ref: 'User' },
+  title: { type: String, required: true },
   description: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   likes: [{ type: String, reh: "Likes" }],
@@ -21,7 +23,7 @@ const postScehma: Schema<IPost> = new mongoose.Schema({
     data: { type: String },
     contentType: { type: String },
   },
-  comment: {type: String, ref:"Comment"}
+  comment: { type: String, ref: "Comment" }
 });
 
 const Post = mongoose.model<IPost>("Post", postScehma);

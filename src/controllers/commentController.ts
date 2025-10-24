@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Comment from "../models/Comment";
-import Post from "../models/Post";
 
 // comment
 
@@ -39,7 +38,7 @@ export const getCommentForPost = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteComment = async (req: Request<{ id:string}>, res: Response) => {
+export const deleteComment = async (req: Request<{ id: string }>, res: Response) => {
   try {
     const deletedComment = await Comment.findByIdAndDelete(req.params.id);
     if (!deletedComment) {

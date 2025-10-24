@@ -114,7 +114,7 @@ export const updatePost = async (req: CustomRequest, res: any) => {
   try {
     const postId = req.params.id;
     const { title, description } = req.body;
-    const userId = req.user?.id;
+    // const userId = req.user?.id;
 
     const foundPost = await post.findById(postId);
     if (!foundPost) {
@@ -133,7 +133,7 @@ export const updatePost = async (req: CustomRequest, res: any) => {
     foundPost.title = title || foundPost.title;
     foundPost.description = description || foundPost.description;
     foundPost.image = image;
-    const updatePost = await foundPost.save();
+    await foundPost.save();
   } catch (error) {
     console.error("Update post error:", error);
     res
@@ -145,7 +145,7 @@ export const updatePost = async (req: CustomRequest, res: any) => {
 export const deletePost = async (req: CustomRequest, res: any) => {
   try {
     const postId = req.params.id;
-    const userId = req.user?.id;
+    // const userId = req.user?.id;
 
     const foundPost = await post.findById(postId);
     if (!foundPost) {
