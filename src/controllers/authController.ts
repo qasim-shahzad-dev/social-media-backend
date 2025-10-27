@@ -1,6 +1,8 @@
-import { Request, Response } from "express";
 import User from "../models/User";
 import jwt from "jsonwebtoken";
+import appEventEmitter from "../events/EventEmitter";
+import { USER_EVENTS } from "../constants/index";
+
 
 //resgiter
 
@@ -36,6 +38,8 @@ export const signup = async (req: IUserRequest, res: any) => {
 
     const newUser = new User({ username, email, password });
     await newUser.save();
+    //Event
+     appEventEmitter.emit(USER_EVENTS.CREATED, newUser);
     res
       .status(201)
       .json({
@@ -80,6 +84,8 @@ export const login = async (req: IUserRequest, res: any) => {
         expiresIn: "1d",
       }
     );
+     appEventEmitter.emit(USER_EVENTS.CREATED, user);
+
     res
     res.status(200).json({
   results: {

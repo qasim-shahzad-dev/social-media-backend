@@ -10,10 +10,10 @@ import postRoutes from "./routes/post";
 import commentRoutes from "./routes/Comment";
 import likeRoutes from "./routes/like";
 import currentRoutes from "./routes/Current";
-import authMiddleware from "./middlewares/authMiddleware";
+// import authMiddleware from "./middlewares/authMiddleware";
 import updateProfileRoutes from "./routes/updateProfile";
 import webhookRoutes from "./routes/webhook.routes";
-
+import setupUserListeners from "./listeners/user.Listner"
 dotenv.config();
 connectDB();
 
@@ -25,7 +25,7 @@ app.use(
     },
   })
 );
-
+setupUserListeners();
 app.use(helmet());
 app.use(cors());
 app.use(morgan('dev'));

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { handleEvent } from "../events/eventHandler";
+import { handleEvent } from "../events/webhook/eventHandler";
 
 export const receiveWebhook = (req: Request, res: Response) => {
   console.log("✅ Webhook payload received:", req.body);
