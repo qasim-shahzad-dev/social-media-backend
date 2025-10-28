@@ -1,9 +1,13 @@
-export function logInfo(message: string) {
-  console.log(`[INFO] ${new Date().toISOString()} - ${message}`);
-}
+import winston from 'winston';
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports: [
+    // Save all logs to a file
+    new winston.transports.File({ filename: 'notifications.log' }),
+    // Also log errors to a separate file
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+  ],
+});
 
-export function logError(message: string) {
-  console.error(`[ERROR] ${new Date().toISOString()} - ${message}`);
-}
-//i will further enahance this and use winston for proper logging
-
+export default logger;

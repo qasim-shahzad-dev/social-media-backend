@@ -1,10 +1,11 @@
 // src/server.ts
-import express, { NextFunction } from "express";
+import express from "express";
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from "dotenv";
 import connectDB from "./config/db";
+import { redis } from "./config/redisClient";
 import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
 import commentRoutes from "./routes/Comment";
@@ -15,7 +16,6 @@ import updateProfileRoutes from "./routes/updateProfile";
 import webhookRoutes from "./routes/webhook.routes";
 import setupUserListeners from "./listeners/user.Listner"
 dotenv.config();
-connectDB();
 
 const app = express();
 app.use(
@@ -43,10 +43,9 @@ app.use("/api/webhook", webhookRoutes);
 
 //Port
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await redis.connect();
+   connectDB();
   console.log(`Server is running on port ${PORT}`);
 });
-function next() {
-  throw new Error("Function not implemented.");
-}
 

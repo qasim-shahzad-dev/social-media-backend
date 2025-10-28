@@ -1,37 +1,25 @@
-// import { createClient } from "redis";
-// import dotenv from "dotenv";
-// dotenv.config();
+import { createClient } from "redis";
+import dotenv from 'dotenv';
+dotenv.config();
 
-// console.log("test");
 
-// const redisClient = createClient({
-//   socket: {
-//     host: process.env.redis_host,
-//     port: process.env.redis_port,
-//   },
-//   username:process.env.redis_username,
-//   password:process.env.redis_password,
-//   // legacyMode: true, // 👈 important
-// }as any);
+export const redis = createClient({
+    username: process.env.REDIS_USERNAME,
+    password: process.env.REDIS_PASSWORD,
+    socket: {
+        host: process.env.REDIS_HOST,
+        port: Number(process.env.REDIS_PORT),
+    },
+});
 
-// redisClient.on("error", (err) => {
-//   console.error("Redis Client Error", err);
-// });
+redis.on("connect", () => {
+    console.log("Redis Connected");
+});
 
-// (async () => {
-//   try {
-//     await redisClient.connect();
-//     console.log("Redis connected successfully");
+redis.on("disconnect", () => {
+    console.log("Redis Disconnected");
+});
 
-//     // Test legacy GET call
-//     const legacy = redisClient as any;
-//     legacy.get("test", (err: any, reply: any) => {``
-//       if (err) console.error(err);
-//       else console.log("Value for 'test':", reply);
-//     });
-//   } catch (error) {
-//     console.error("Redis connection error", error);
-//   }
-// })();
-
-// export default redisClient;
+redis.on("error", (error) => {
+    console.log(`Redis connection error: ${error}`);
+});

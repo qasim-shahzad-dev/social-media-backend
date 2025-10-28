@@ -2,6 +2,7 @@ import User from "../models/User";
 import jwt from "jsonwebtoken";
 import appEventEmitter from "../events/EventEmitter";
 import { USER_EVENTS } from "../constants/index";
+import { AddNotification } from "../queues/queue";
 
 
 //resgiter
@@ -16,8 +17,14 @@ interface IUserRequest {
 
 export const signup = async (req: IUserRequest, res: any) => {
   const { username, email, password } = req.body;
+  console.log(`User ${username} created`);
 
   try {
+    await AddNotification({
+      type: 'welcome_email',
+      username,
+      email,
+    });
     const existingUser = await User.findOne({ email });
     if (!username)
       return res
@@ -39,7 +46,7 @@ export const signup = async (req: IUserRequest, res: any) => {
     const newUser = new User({ username, email, password });
     await newUser.save();
     //Event
-     appEventEmitter.emit(USER_EVENTS.CREATED, newUser);
+    appEventEmitter.emit(USER_EVENTS.CREATED, newUser);
     res
       .status(201)
       .json({
@@ -48,6 +55,7 @@ export const signup = async (req: IUserRequest, res: any) => {
         sucess: true,
       });
   } catch (error) {
+    console.error('Failed to add job to queue:', error);
     res
       .status(500)
       .json({ message: "Internal server error", status: 500, success: false });
@@ -71,7 +79,7 @@ export const login = async (req: IUserRequest, res: any) => {
           success: false,
         });
 
-    const isMatch =  user.comparePassword(password);
+    const isMatch = user.comparePassword(password);
     if (!isMatch)
       return res
         .status(400)
@@ -84,18 +92,18 @@ export const login = async (req: IUserRequest, res: any) => {
         expiresIn: "1d",
       }
     );
-     appEventEmitter.emit(USER_EVENTS.CREATED, user);
+    appEventEmitter.emit(USER_EVENTS.CREATED, user);
 
     res
     res.status(200).json({
-  results: {
-    token: token, 
-  },
-  
-  message: "User logged in successfully",
-  status: 200,
-  success: true,
-});
+      results: {
+        token: token,
+      },
+
+      message: "User logged in successfully",
+      status: 200,
+      success: true,
+    });
 
 
   } catch (error) {
