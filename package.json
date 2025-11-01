@@ -111,7 +111,7 @@
     "wrappy": "^1.0.2"
   },
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "local": "nodemon src/server.ts",
     "build": "tsc",
     "start": "node dist/server.ts"
   },

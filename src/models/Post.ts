@@ -1,30 +1,30 @@
-import mongoose, { Schema, Document, Date, ObjectId } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-interface IPost extends Document {
-  creator:Schema.Types.ObjectId
-  title: string;
-  description: string;
-  createdAt: Date;
-  comment: string;
-  likes: string[];
-  image: {
-    data: string;
-    contentType: string;
-  };
-}
 
-const postScehma: Schema<IPost> = new mongoose.Schema({
-  creator: { type: Schema.Types.ObjectId, reuqired: true, ref: 'User' },
+const postScehma: Schema = new mongoose.Schema({
+  author: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'User' },
   title: { type: String, required: true },
   description: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
-  likes: [{ type: String, reh: "Likes" }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Likes" }],
   image: {
     data: { type: String },
     contentType: { type: String },
   },
-  comment: { type: String, ref: "Comment" }
+  comment: { type: mongoose.Schema.Types.ObjectId, ref: "Comment" }
 });
 
-const Post = mongoose.model<IPost>("Post", postScehma);
+postScehma.pre('save', async function(){  
+  try {
+    // find user doc and update its post arrya with the newone
+     await mongoose.model('User').findByIdAndUpdate(
+      this.author,
+      {$push:{ posts: this._id}},
+      {new : true}
+    );
+  } catch (error) {
+    console.error(error); 
+  }
+})
+const Post = mongoose.model("Post", postScehma);
 export default Post;

@@ -1,7 +1,7 @@
 // src/services/user.service.ts
 import appEventEmitter from "../events/EventEmitter";
 import  {USER_EVENTS}  from "../constants/index";
-import { logInfo } from "../utils/logger";
+import  logInfo  from "../utils/logger";
 import { User } from "../types/expres";
 import crypto from "crypto";
 
@@ -15,7 +15,7 @@ export class UserService {
     };
 
     this.users.push(user);
-    logInfo(`User saved to in-memory DB: ${user.email}`);
+    console.log(`User saved to in-memory DB: ${user.email}`);
 
     // Emit event
     appEventEmitter.emit(USER_EVENTS.CREATED, user);
@@ -28,7 +28,7 @@ export class UserService {
     if (index === -1) return false;
 
     const [deletedUser] = this.users.splice(index, 1);
-    logInfo(`User removed: ${deletedUser.email}`);
+    console.log(`User removed: ${deletedUser.email}`);
 
     // Emit event
     appEventEmitter.emit(USER_EVENTS.DELETED, deletedUser.id);

@@ -3,11 +3,20 @@ import post from "../models/Post";
 // import redisClient from "../config/redisClient";
 // import { count } from "console";
 // import { updateProfile } from "./updateProfileController";
+interface CustomRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+  };
+}
 
 export const createPost = async (req: CustomRequest, res: Response) => {
+
   try {
     const { description, title } = req.body;
-
+    if(!description  || !title){
+      throw new Error ("Invalid Inputs")
+    }
     //read image file
     const image = req.file
       ? {
@@ -20,7 +29,7 @@ export const createPost = async (req: CustomRequest, res: Response) => {
       title,
       description,
       image : image ?? '',
-      userId: req.user?.id,
+      author: req.user?.id,
     });
 
     const savedPost = await newPost.save();
@@ -40,38 +49,14 @@ export const createPost = async (req: CustomRequest, res: Response) => {
   }
 };
 
-interface CustomRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-  };
-}
 
 export const getPosts = async (req: CustomRequest, res: any) => {
   try {
-    // const cacheKey = "all-posts";
-
-    //try to get cache posts
-
-    // const cachePosts = await redisClient.get(cacheKey);
-    // if (cachePosts) {
-    //   return res
-    //     .status(200)
-    //     .json({
-    //       posts: JSON.parse(cachePosts),
-    //       source: "cache",
-    //       status: 200,
-    //       success: true,
-    //     });
-    // }
-
-    //if not in cache fetch it from db
-
-    const posts = await post.find().sort({ createdAt: -1 });
-    //save to redis cache for future requests (set 60s expiry)
-    // await redisClient.set(cacheKey, JSON.stringify(posts), {
-    //   EX: 60, 
-    // });
+    const {user} = req.user?.id as any;
+    if(!user){
+      throw new Error ("User is undefined")
+    }
+    const posts = await post.find(user).sort({ createdAt: -1 });
     res
       .status(200)
       .json({ posts, source: "database", status: 200, success: true });

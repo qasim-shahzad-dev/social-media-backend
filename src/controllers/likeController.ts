@@ -1,37 +1,31 @@
 import { Request, Response } from "express";
+import Like from "../models/Likes";
 import Post from "../models/Post";
-interface IlikeRequest {
-  params: { postId: string };
-  body: { userId: string };
-}
 
-export const toggleLike = async (req: IlikeRequest, res: any) => {
+export const toggleLike = async (req: Request, res: Response) => {
   try {
-    const postId = req.params.postId;
-    const userId = req.body.userId;
+    const userId = (req as any).userId; // 👈 safely read the injected userId
+    const { postId } = req.params;
 
-    const post = await Post.findById(postId);
-    if (!post)
-      return res
-        .status(404)
-        .json({ message: "Post not found", status: 404, success: false });
-
-    const userIndex = post.likes.indexOf(userId);
-
-    if (userIndex === -1) {
-      post.likes.push(userId);
-    } else {
-      post.likes.splice(userIndex, 1);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    await post.save();
-    res.status(200).json({
-      sucess: true,
-      message: userIndex === -1 ? "PostLiked" : "Post unliked",
-      LikesCount: post.likes.length,
-    });
+
+    // Check if user already liked this post
+    const existingLike = await Like.findOne({ user: userId, post: postId });
+
+    if (existingLike) {
+      await Like.findByIdAndDelete(existingLike._id);
+      await Post.findByIdAndUpdate(postId, { $pull: { likes: existingLike._id } });
+      return res.status(200).json({ message: "Post unliked successfully" });
+    }
+
+    const newLike = await Like.create({ user: userId, post: postId });
+    await Post.findByIdAndUpdate(postId, { $push: { likes: newLike._id } });
+
+    res.status(201).json({ message: "Post liked successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "internal server error", status: 500, success: false });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };

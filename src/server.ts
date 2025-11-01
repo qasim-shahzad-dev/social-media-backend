@@ -9,9 +9,9 @@ import { redis } from "./config/redisClient";
 import authRoutes from "./routes/auth";
 import postRoutes from "./routes/post";
 import commentRoutes from "./routes/Comment";
-import likeRoutes from "./routes/like";
+// import likeRoutes from "./routes/like";
 import currentRoutes from "./routes/Current";
-// import authMiddleware from "./middlewares/authMiddleware";
+import {verifyToken} from "./middlewares/authMiddleware";
 import updateProfileRoutes from "./routes/updateProfile";
 import webhookRoutes from "./routes/webhook.routes";
 import setupUserListeners from "./listeners/user.Listner"
@@ -32,12 +32,12 @@ app.use(morgan('dev'));
 
 //routes
 app.use("/api/auth", authRoutes);
-// app.use(authMiddleware);
 app.use("/api/auth", currentRoutes);
-app.use("/api/post", postRoutes);
+app.use("/api/post",verifyToken, postRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/likes", likeRoutes);
+// app.use("/api/likes", likeRoutes);
 app.use("/api/user", updateProfileRoutes)
+
 //Webhook
 app.use("/api/webhook", webhookRoutes);
 
