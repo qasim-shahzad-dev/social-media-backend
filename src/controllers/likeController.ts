@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import Like from "../models/Likes";
 import Post from "../models/Post";
 
-export const toggleLike = async (req: Request, res: Response) => {
+export const toggleLike = async (req: Request, res: any) => {
   try {
     const userId = (req as any).userId; // 👈 safely read the injected userId
+    console.log("🚀 ~ toggleLike ~ userId:", userId)
     const { postId } = req.params;
-
+    
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }

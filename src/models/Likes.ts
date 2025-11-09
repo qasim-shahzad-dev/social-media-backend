@@ -8,6 +8,6 @@ const likeSchema: Schema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId, required:true, ref: 'Post'
     },
 },{timestamps:true});
-likeSchema.index({user: 1, post :1},{unique:true});
+likeSchema.index({user: 1, post :1},{unique:true}); //user can like or unlike specific post
 const Likes = mongoose.model('Likes', likeSchema);
 export default Likes;

@@ -1,11 +1,11 @@
-// import express from "express";
+import express from "express";
 
-// import { toggleLike } from "../controllers/likeController";
+import { toggleLike } from "../controllers/likeController";
 
-// const router = express.Router();
+const router = express.Router();
 
-// //toggleLike
+//toggleLike
 
-// router.post("/post/:postId/like", toggleLike);
+router.post("/:id", toggleLike);
 
-// export default router;
+export default router;
