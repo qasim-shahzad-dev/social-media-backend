@@ -11,7 +11,7 @@ import postRoutes from "./routes/post";
 import commentRoutes from "./routes/Comment";
 import likeRoutes from "./routes/like";
 import currentRoutes from "./routes/Current";
-import {verifyToken} from "./middlewares/authMiddleware";
+import {tokenAuthorization} from "./middlewares/authMiddleware";
 import updateProfileRoutes from "./routes/updateProfile";
 import webhookRoutes from "./routes/webhook.routes";
 import setupUserListeners from "./listeners/user.Listner"
@@ -34,9 +34,9 @@ app.use(morgan('dev'));
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", currentRoutes);
-app.use("/api/post",verifyToken, postRoutes);
+app.use("/api/post",tokenAuthorization, postRoutes);
 app.use("/api/comments", commentRoutes);
-app.use("/api/likes", likeRoutes);
+app.use("/api/likes",tokenAuthorization, likeRoutes);
 app.use("/api/user", updateProfileRoutes)
 
 //Webhook

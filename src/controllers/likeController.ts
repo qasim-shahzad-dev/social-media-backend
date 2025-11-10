@@ -2,18 +2,22 @@ import { Request, Response } from "express";
 import Like from "../models/Likes";
 import Post from "../models/Post";
 
-export const toggleLike = async (req: Request, res: any) => {
+export interface LikeRequest extends Request {
+  user?: string;
+  id: string;
+};
+export const toggleLike = async (req: LikeRequest, res: any) => {
   try {
-    const userId = (req as any).userId; // 👈 safely read the injected userId
-    console.log("🚀 ~ toggleLike ~ userId:", userId)
+    const {id} = req.user as any;
+    console.log("🚀 ~ toggleLike ~ id:", id)
     const { postId } = req.params;
-    
-    if (!userId) {
+
+    if (!id) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     // Check if user already liked this post
-    const existingLike = await Like.findOne({ user: userId, post: postId });
+    const existingLike = await Like.findOne({ user: id, post: postId });
 
     if (existingLike) {
       await Like.findByIdAndDelete(existingLike._id);
@@ -21,7 +25,7 @@ export const toggleLike = async (req: Request, res: any) => {
       return res.status(200).json({ message: "Post unliked successfully" });
     }
 
-    const newLike = await Like.create({ user: userId, post: postId });
+    const newLike = await Like.create({ user: id, post: postId });
     await Post.findByIdAndUpdate(postId, { $push: { likes: newLike._id } });
 
     res.status(201).json({ message: "Post liked successfully" });

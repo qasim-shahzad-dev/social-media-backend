@@ -1,15 +1,14 @@
-import * as express from 'express';
+import * as express from "express";
 
 declare global {
   namespace Express {
     interface Request {
-      userId?: string;
+      file?: Express.Multer.File;
+      files?: Express.Multer.File[];
     }
   }
 }
-// src/types/user.types.ts
-export interface User {
-  id: string;
-  name: string;
-  email: string;
+
+export interface ISecret {
+  secret: string
 }

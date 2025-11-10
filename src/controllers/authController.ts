@@ -86,12 +86,13 @@ export const login = async (req: IUserRequest, res: any) => {
         .json({ message: "invalid Credential", status: 400, success: false });
 
     const token = jwt.sign(
-      { userId: user._id },
+      { id: user._id },
       process.env.JWT_SECRET as string,
       {
         expiresIn: "1d",
       }
     );
+    console.log("🚀 ~ login ~ token:", token)
     appEventEmitter.emit(USER_EVENTS.CREATED, user);
 
     res
